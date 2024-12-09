@@ -1,0 +1,22 @@
+{
+  "name": "advent-of-code-2024",
+  "version": "1.0.0",
+  "main": "",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "run": "node --import tsx src/main.ts",
+    "test": "node --import=tsx --test **/*.test.ts",
+    "test:watch": "node --import=tsx --test --watch **/*.test.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@types/node": "^22.10.1"
+  }
+}
