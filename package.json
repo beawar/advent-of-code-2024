@@ -6,7 +6,7 @@
   "description": "",
   "main": "",
   "workspaces": [
-    "packages"
+    "packages/*"
   ],
   "scripts": {
     "lint:check": "eslint .",

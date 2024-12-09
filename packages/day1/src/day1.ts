@@ -1,6 +1,3 @@
-import * as fs from "node:fs";
-import * as readline from "node:readline/promises";
-
 export function calculateDistance(input1: number[], input2: number[]): number {
   if (input1.length !== input2.length) {
     throw new Error("inputs have different lengths");
@@ -16,25 +13,26 @@ export function calculateDistance(input1: number[], input2: number[]): number {
   }, 0);
 }
 
-export function readAndParseInputFile(
-  path: string,
-): Promise<[number[], number[]]> {
-  return new Promise((resolve, reject) => {
-    try {
-      const inputs: [number[], number[]] = [[], []];
-      const fileReader = readline.createInterface({
-        input: fs.createReadStream(path),
-      });
-      fileReader.on("line", (input) => {
-        const values = input.split(/\s+/);
-        inputs[0].push(Number(values[0]));
-        inputs[1].push(Number(values[1]));
-      });
-      fileReader.on("close", () => {
-        resolve(inputs);
-      });
-    } catch (err) {
-      reject(new Error(`Could not parse input file: ${err}`));
+export function calculateSimilarityScore(
+  input1: number[],
+  input2: number[],
+): number {
+  if (input1.length !== input2.length) {
+    throw new Error("inputs have different lengths");
+  }
+  if (input1.length === 0 && input2.length === 0) {
+    return 0;
+  }
+  const sortedInput2 = input2.toSorted((a, b) => a - b);
+  return input1.reduce((accumulator, value) => {
+    const firstIndex = sortedInput2.findIndex((item) => item === value);
+    if (firstIndex >= 0) {
+      const values = sortedInput2.slice(
+        firstIndex,
+        sortedInput2.findLastIndex((item) => item === value) + 1,
+      );
+      accumulator += value * values.length;
     }
-  });
+    return accumulator;
+  }, 0);
 }
