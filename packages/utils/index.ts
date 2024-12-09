@@ -16,8 +16,14 @@ export function readFileInput(
       fileReader.on("close", () => {
         resolve();
       });
-    } catch (err) {
-      reject(new Error(`Could not parse input file: ${err}`));
+    } catch (err: unknown) {
+      if (typeof err === "string") {
+        reject(new Error(err));
+      } else if (err instanceof Error) {
+        reject(err);
+      } else {
+        reject(new Error(`Cannot read file ${path}`));
+      }
     }
   });
 }

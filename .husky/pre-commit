@@ -1,1 +1,3 @@
+npm run type-check
 lint-staged
+npm run lint

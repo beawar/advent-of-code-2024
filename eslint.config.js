@@ -17,4 +17,20 @@ export default tseslint.config(
       },
     },
   },
+  {
+    rules: {
+      "@typescript-eslint/no-floating-promises": [
+        "warn",
+        {
+          allowForKnownSafeCalls: [
+            {
+              from: "package",
+              name: ["it", "describe"],
+              package: "node:test",
+            },
+          ],
+        },
+      ],
+    },
+  },
 );

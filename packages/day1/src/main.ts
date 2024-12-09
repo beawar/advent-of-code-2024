@@ -1,5 +1,8 @@
-import { calculateDistance, calculateSimilarityScore } from "./day1.js";
-import { readAndParseInputFile } from "./utils.js";
+import {
+  calculateDistance,
+  calculateSimilarityScore,
+  readAndParseInputFile,
+} from "./day1.js";
 
 async function main(): Promise<[number, number]> {
   const [input1, input2] = await readAndParseInputFile(
@@ -11,5 +14,7 @@ async function main(): Promise<[number, number]> {
 }
 
 main()
-  .then((result) => console.log(result))
-  .catch(console.error);
+  .then(console.log)
+  .catch((err: unknown) => {
+    console.error(err);
+  });

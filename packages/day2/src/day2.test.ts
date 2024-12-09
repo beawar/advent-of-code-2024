@@ -82,7 +82,7 @@ describe("getNumberOfSafeRecords", () => {
       [8, 6, 4, 4, 1],
       [1, 3, 6, 7, 9],
     ];
-    const result = getNumberOfSafeRecords(input);
+    const result = getNumberOfSafeRecords(input, 0);
     assert.equal(result, 2);
   });
 });

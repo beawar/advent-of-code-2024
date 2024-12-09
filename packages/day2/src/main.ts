@@ -5,4 +5,8 @@ async function main() {
   return [getNumberOfSafeRecords(input, 0), getNumberOfSafeRecords(input, 1)];
 }
 
-main().then(console.log).catch(console.error);
+main()
+  .then(console.log)
+  .catch((err: unknown) => {
+    console.error(err);
+  });

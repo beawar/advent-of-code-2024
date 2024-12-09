@@ -10,7 +10,7 @@ export function calculateDistance(input1: number[], input2: number[]): number {
   const sortedInput1 = input1.toSorted((a, b) => a - b);
   const sortedInput2 = input2.toSorted((a, b) => a - b);
   return sortedInput1.reduce<number>((distance, value1, index) => {
-    distance += Math.abs(value1 - sortedInput2[index]!);
+    distance += Math.abs(value1 - sortedInput2[index]);
     return distance;
   }, 0);
 }
