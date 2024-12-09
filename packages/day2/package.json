@@ -1,9 +1,8 @@
 {
-  "name": "day1",
+  "name": "day2",
   "version": "1.0.0",
-  "main": "",
+  "main": "index.ts",
   "type": "module",
-  "private": true,
   "scripts": {
     "start": "node --import tsx src/main.ts",
     "test": "node --import=tsx --test **/*.test.ts",
@@ -11,5 +10,6 @@
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {}
 }

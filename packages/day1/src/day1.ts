@@ -1,3 +1,5 @@
+import { readFileInput } from "utils";
+
 export function calculateDistance(input1: number[], input2: number[]): number {
   if (input1.length !== input2.length) {
     throw new Error("inputs have different lengths");
@@ -35,4 +37,16 @@ export function calculateSimilarityScore(
     }
     return accumulator;
   }, 0);
+}
+
+export async function readAndParseInputFile(
+  path: string,
+): Promise<[number[], number[]]> {
+  const inputs: [number[], number[]] = [[], []];
+  await readFileInput(path, (input: string) => {
+    const values = input.split(/\s+/);
+    inputs[0].push(Number(values[0]));
+    inputs[1].push(Number(values[1]));
+  });
+  return inputs;
 }

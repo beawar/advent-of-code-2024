@@ -1,22 +1,20 @@
 import readline from "node:readline/promises";
 import fs from "node:fs";
 
-export function readAndParseInputFile(
+export function readFileInput(
   path: string,
-): Promise<[number[], number[]]> {
+  lineParser: (line: string) => void,
+): Promise<void> {
   return new Promise((resolve, reject) => {
     try {
-      const inputs: [number[], number[]] = [[], []];
       const fileReader = readline.createInterface({
         input: fs.createReadStream(path),
       });
       fileReader.on("line", (input) => {
-        const values = input.split(/\s+/);
-        inputs[0].push(Number(values[0]));
-        inputs[1].push(Number(values[1]));
+        lineParser(input);
       });
       fileReader.on("close", () => {
-        resolve(inputs);
+        resolve();
       });
     } catch (err) {
       reject(new Error(`Could not parse input file: ${err}`));

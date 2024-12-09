@@ -1,11 +1,9 @@
 {
-  "name": "day1",
+  "name": "utils",
   "version": "1.0.0",
-  "main": "",
+  "main": "index.js",
   "type": "module",
-  "private": true,
   "scripts": {
-    "start": "node --import tsx src/main.ts",
     "test": "node --import=tsx --test **/*.test.ts",
     "test:watch": "node --import=tsx --test --watch **/*.test.ts"
   },
