@@ -1,0 +1,15 @@
+{
+  "name": "day4",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "type": "module",
+  "scripts": {
+    "start": "node --import tsx src/main.ts",
+    "test": "node --import=tsx --test **/*.test.ts",
+    "test:watch": "node --import=tsx --test **/*.test.ts --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
