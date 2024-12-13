@@ -42,3 +42,34 @@ export function getOrderedUpdates(
 ): number[][] {
   return input.filter((update) => isUpdateOrdered(update, orderingRules));
 }
+
+export function getUnorderedUpdates(
+  input: number[][],
+  orderingRules: [number, number][],
+): number[][] {
+  return input.filter((update) => !isUpdateOrdered(update, orderingRules));
+}
+
+export function fixUnorderedUpdate(
+  input: number[],
+  orderingRules: [number, number][],
+) {
+  let wrongRule: [number, number] | undefined;
+  const fixedInput = [...input];
+  do {
+    fixedInput.slice(0, -1).some((pageValue, index) => {
+      return fixedInput.slice(index + 1).some((nextValue) => {
+        wrongRule = orderingRules.find(
+          (rule) => rule[1] === pageValue && rule[0] === nextValue,
+        );
+        return !!wrongRule;
+      });
+    });
+    if (wrongRule) {
+      fixedInput[fixedInput.indexOf(wrongRule[0])] = wrongRule[1];
+      fixedInput[fixedInput.indexOf(wrongRule[1])] = wrongRule[0];
+    }
+  } while (wrongRule);
+
+  return fixedInput;
+}

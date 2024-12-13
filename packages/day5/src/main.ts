@@ -1,5 +1,7 @@
 import {
+  fixUnorderedUpdate,
   getOrderedUpdates,
+  getUnorderedUpdates,
   readAndParseInputFile,
   sumMiddlePages,
 } from "./day5.js";
@@ -9,7 +11,11 @@ async function main() {
     `${import.meta.dirname}/input`,
   );
   const orderedUpdates = getOrderedUpdates(updates, rules);
-  return [sumMiddlePages(orderedUpdates)];
+  const unOrderedUpdates = getUnorderedUpdates(updates, rules);
+  const fixedUpdates = unOrderedUpdates.map((update) =>
+    fixUnorderedUpdate(update, rules),
+  );
+  return [sumMiddlePages(orderedUpdates), sumMiddlePages(fixedUpdates)];
 }
 
 main()

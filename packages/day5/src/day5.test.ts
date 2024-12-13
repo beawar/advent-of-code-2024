@@ -1,6 +1,8 @@
 import { describe, it } from "node:test";
 import {
+  fixUnorderedUpdate,
   getOrderedUpdates,
+  getUnorderedUpdates,
   isUpdateOrdered,
   readAndParseInputFile,
   sumMiddlePages,
@@ -105,6 +107,49 @@ describe("getOrderedUpdates", () => {
       [75, 29, 13],
     ];
     const result = getOrderedUpdates(input, orderingRules);
+    assert.deepStrictEqual(result, expected);
+  });
+});
+
+describe("getUnorderedUpdates", () => {
+  it("should return only the valid ordered updates", () => {
+    const input = [
+      [75, 47, 61, 53, 29],
+      [97, 61, 53, 29, 13],
+      [75, 29, 13],
+      [75, 97, 47, 61, 53],
+      [61, 13, 29],
+      [97, 13, 75, 29, 47],
+    ];
+    const expected = [
+      [75, 97, 47, 61, 53],
+      [61, 13, 29],
+      [97, 13, 75, 29, 47],
+    ];
+    const result = getUnorderedUpdates(input, orderingRules);
+    assert.deepStrictEqual(result, expected);
+  });
+});
+
+describe("fixUnorderedUpdated", () => {
+  it("should return the update with the correct sequence 1", () => {
+    const input = [75, 97, 47, 61, 53];
+    const result = fixUnorderedUpdate(input, orderingRules);
+    const expected = [97, 75, 47, 61, 53];
+    assert.deepStrictEqual(result, expected);
+  });
+
+  it("should return the update with the correct sequence 2", () => {
+    const input = [61, 13, 29];
+    const result = fixUnorderedUpdate(input, orderingRules);
+    const expected = [61, 29, 13];
+    assert.deepStrictEqual(result, expected);
+  });
+
+  it("should return the update with the correct sequence 3", () => {
+    const input = [97, 13, 75, 29, 47];
+    const result = fixUnorderedUpdate(input, orderingRules);
+    const expected = [97, 75, 47, 29, 13];
     assert.deepStrictEqual(result, expected);
   });
 });
