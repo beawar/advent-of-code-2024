@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node --import tsx src/main.ts",
     "test": "node --import=tsx --test **/*.test.ts",
-    "test:watch": "node --import=tsx --test **/*.test.ts --watch"
+    "test:watch": "node --import=tsx --test --watch **/*.test.ts"
   },
   "author": "",
   "license": "ISC",

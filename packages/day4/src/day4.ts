@@ -90,3 +90,27 @@ export function isMatch(
   }
   return false;
 }
+
+export function isCrossMatch(input: string[][], x: number, y: number): boolean {
+  if (x > 0 && x + 1 < input[0].length && y > 0 && y + 1 < input.length) {
+    return (
+      /(MAS|SAM)/.test(
+        `${input[y - 1][x - 1]}${input[y][x]}${input[y + 1][x + 1]}`,
+      ) &&
+      /(MAS|SAM)/.test(
+        `${input[y - 1][x + 1]}${input[y][x]}${input[y + 1][x - 1]}`,
+      )
+    );
+  }
+  return false;
+}
+
+export function findCrossMatches(input: string[][]): number {
+  return input.slice(1, -1).reduce((sum, row, y) => {
+    // add +1 to x and y because of the slices
+    sum += row
+      .slice(1, -1)
+      .filter((_, x) => isCrossMatch(input, x + 1, y + 1)).length;
+    return sum;
+  }, 0);
+}

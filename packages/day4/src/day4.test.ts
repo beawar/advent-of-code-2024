@@ -1,5 +1,11 @@
 import { describe, it } from "node:test";
-import { findMatches, isMatch, readAndParseInputFile } from "./day4.ts";
+import {
+  findCrossMatches,
+  findMatches,
+  isCrossMatch,
+  isMatch,
+  readAndParseInputFile,
+} from "./day4.ts";
 import assert from "node:assert/strict";
 
 describe("readAndParseInputFile", () => {
@@ -193,5 +199,77 @@ describe("isMatch", () => {
       const result = isMatch(input, 0, 0, ["M", "A", "S"], "bottomLeft");
       assert.equal(result, false);
     });
+  });
+});
+
+describe("isCrossMatch", () => {
+  it("should return false if given coordinates are not an A", () => {
+    const input = [
+      ["M", ".", "S", "M"],
+      [".", "S", ".", "M"],
+      ["M", "S", "S", "M"],
+      ["M", ".", "A", "M"],
+      ["M", "S", "S", "M"],
+    ];
+    const result = isCrossMatch(input, 1, 2);
+    assert.equal(result, false);
+  });
+  it("should return true if the corner values around an A are S or M", () => {
+    const input = [
+      ["M", ".", "S"],
+      [".", "A", "."],
+      ["M", ".", "S"],
+    ];
+    const result = isCrossMatch(input, 1, 1);
+    assert.equal(result, true);
+  });
+
+  it("should return false if at least one value on the corners is not M or S", () => {
+    const input = [
+      [".", "M", "S"],
+      ["S", "A", "M"],
+      ["M", "S", "S"],
+    ];
+    const result = isCrossMatch(input, 1, 1);
+    assert.equal(result, false);
+  });
+
+  it("should return false if the diagonal values are not MAS or SAM", () => {
+    const input = [
+      ["M", "M", "M"],
+      ["M", "A", "M"],
+      ["S", "M", "M"],
+    ];
+    const result = isCrossMatch(input, 1, 1);
+    assert.equal(result, false);
+  });
+});
+
+describe("findCrossMatches", () => {
+  it("should return the number of valid MAS crosses", () => {
+    const input = [
+      [".", "M", ".", "S", ".", ".", ".", ".", ".", "."],
+      [".", ".", "A", ".", ".", "M", "S", "M", "S", "."],
+      [".", "M", ".", "S", ".", "M", "A", "A", ".", "."],
+      [".", ".", "A", ".", "A", "S", "M", "S", "M", "."],
+      [".", "M", ".", "S", ".", "M", ".", ".", ".", "."],
+      [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+      ["S", ".", "S", ".", "S", ".", "S", ".", "S", "."],
+      [".", "A", ".", "A", ".", "A", ".", "A", ".", "."],
+      ["M", ".", "M", ".", "M", ".", "M", ".", "M", "."],
+      [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+    ];
+    const result = findCrossMatches(input);
+    assert.equal(result, 9);
+  });
+
+  it("should return the number of valid MAS crosses", () => {
+    const input = [
+      ["M", ".", "S"],
+      [".", "A", "."],
+      ["M", ".", "S"],
+    ];
+    const result = findCrossMatches(input);
+    assert.equal(result, 1);
   });
 });
