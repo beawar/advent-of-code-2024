@@ -2,9 +2,11 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   calcAntinodesForAntennas,
-  filterValidUniqAntinodesForAntennas,
+  calcAntinodesForAntennasWithoutDistanceLimit,
+  filterUniqAntinodesForAntennas,
   getAntennasByFrequency,
   getUniqAntinodesCountFromMap,
+  getUniqAntinodesCountFromMapWithoutDistanceLimit,
   readAndParseInputFile,
 } from "./day8.ts";
 
@@ -52,14 +54,12 @@ describe("calcAntinodesForAntennas", () => {
         { x: 3, y: 1 },
         { x: 6, y: 7 },
         { x: 0, y: 2 },
-        { x: 12, y: 5 },
         { x: 2, y: 6 },
-        { x: 11, y: 3 },
       ],
     ];
 
     antennas.forEach((group, index) => {
-      const result = calcAntinodesForAntennas(group);
+      const result = calcAntinodesForAntennas(group, { maxY: 10, maxX: 10 });
       assert.deepStrictEqual(result, expected[index]);
     });
   });
@@ -106,23 +106,9 @@ describe("filterValidUniqAntinodesForAntennas", () => {
       { x: 3, y: 1 },
       { x: 6, y: 7 },
       { x: 0, y: 2 },
-      { x: 12, y: 5 },
       { x: 2, y: 6 },
-      { x: 11, y: 3 },
     ];
-    const map = [
-      "..........",
-      "...#......",
-      "#.........",
-      "....a.....",
-      "........a.",
-      ".....a....",
-      "..#.......",
-      "......#...",
-      "..........",
-      "..........",
-    ];
-    const result = filterValidUniqAntinodesForAntennas(antinodes, map);
+    const result = filterUniqAntinodesForAntennas(antinodes);
     assert.deepStrictEqual(result, [
       { x: 3, y: 1 },
       { x: 6, y: 7 },
@@ -150,5 +136,62 @@ describe("getUniqAntinodesCountFromMap", () => {
     ];
     const result = getUniqAntinodesCountFromMap(map);
     assert.equal(result, 14);
+  });
+});
+
+describe("calcAntinodesForAntennasWithoutDistanceLimit", () => {
+  it("should return the antinodes for the antennas without limits on the distance", () => {
+    const antennas = [
+      [
+        { x: 0, y: 0 },
+        { x: 3, y: 1 },
+        { x: 1, y: 2 },
+      ],
+    ];
+    const expected = [
+      [
+        { x: 0, y: 0 },
+        { x: 3, y: 1 },
+        { x: 6, y: 2 },
+        { x: 9, y: 3 },
+        { x: 0, y: 0 },
+        { x: 1, y: 2 },
+        { x: 2, y: 4 },
+        { x: 3, y: 6 },
+        { x: 4, y: 8 },
+        { x: 3, y: 1 },
+        { x: 1, y: 2 },
+        { x: 5, y: 0 },
+      ],
+    ];
+
+    antennas.forEach((group, index) => {
+      const result = calcAntinodesForAntennasWithoutDistanceLimit(group, {
+        maxY: 10,
+        maxX: 10,
+      });
+      assert.deepStrictEqual(result, expected[index]);
+    });
+  });
+});
+
+describe("getUniqAntinodesCountFromMapWithoutDistanceLimit", () => {
+  it("should return the number of uniq antinodes", () => {
+    const map = [
+      "............",
+      "........0...",
+      ".....0......",
+      ".......0....",
+      "....0.......",
+      "......A.....",
+      "............",
+      "............",
+      "........A...",
+      ".........A..",
+      "............",
+      "............",
+    ];
+    const result = getUniqAntinodesCountFromMapWithoutDistanceLimit(map);
+    assert.equal(result, 34);
   });
 });
