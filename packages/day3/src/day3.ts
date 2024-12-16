@@ -1,4 +1,4 @@
-import { readFileInput } from "utils";
+import { readFileInput } from "utils/src/index.ts";
 
 export async function readAndParseInputFile(path: string) {
   let result = "";

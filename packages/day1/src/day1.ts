@@ -1,4 +1,4 @@
-import { readFileInput } from "utils";
+import { readFileInput } from "utils/src/index.ts";
 
 export function calculateDistance(input1: number[], input2: number[]): number {
   if (input1.length !== input2.length) {
