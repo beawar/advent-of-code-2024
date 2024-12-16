@@ -8,7 +8,10 @@ export async function readAndParseInputFile(path: string): Promise<string[]> {
   return result;
 }
 
-export function moveNext(map: string[], from: Position) {
+export function moveNext(
+  map: string[],
+  from: PositionAndDirection,
+): PositionAndDirection {
   const to = { ...from };
   switch (from.direction) {
     case "top":
@@ -55,21 +58,26 @@ export function moveNext(map: string[], from: Position) {
   return to;
 }
 
-export function trackPath(map: string[]): { x: number; y: number }[] {
-  let lastPosition: Position = { x: -1, y: -1, direction: "top" };
-  const found = map.some((row, y) => {
+function findInitialPosition(map: string[]): PositionAndDirection {
+  let initialPosition: Position | undefined;
+  map.some((row, y) => {
     const x = row.indexOf("^");
     if (x !== -1) {
-      lastPosition.y = y;
-      lastPosition.x = x;
+      initialPosition = { x, y };
       return true;
     }
     return false;
   });
-  if (!found) {
+  if (!initialPosition) {
     throw new Error(`Could not find guard inside map`);
   }
-  const path: { x: number; y: number }[] = [];
+  return { ...initialPosition, direction: "top" };
+}
+
+export function trackPath(map: string[]): Position[] {
+  let lastPosition: PositionAndDirection = findInitialPosition(map);
+  const path: (Position & { direction?: PositionAndDirection["direction"] })[] =
+    [];
   while (lastPosition.x > -1 && lastPosition.y > -1) {
     const nextPosition = moveNext(map, lastPosition);
     if (nextPosition.direction === lastPosition.direction) {
@@ -80,9 +88,7 @@ export function trackPath(map: string[]): { x: number; y: number }[] {
   return path;
 }
 
-export function getDistinctPositionCount(
-  path: Pick<Position, "x" | "y">[],
-): number {
+function getDistinctPositions(path: Position[]) {
   return path.reduce<typeof path>((uniqPositions, position) => {
     if (
       !uniqPositions.find(
@@ -93,11 +99,59 @@ export function getDistinctPositionCount(
       uniqPositions.push(position);
     }
     return uniqPositions;
-  }, []).length;
+  }, []);
+}
+
+export function getDistinctPositionCount(path: Position[]): number {
+  return getDistinctPositions(path).length;
 }
 
 interface Position {
   x: number;
   y: number;
+}
+
+interface PositionAndDirection extends Position {
   direction: "top" | "right" | "bottom" | "left";
+}
+
+export function findObstaclePositionsForLoop(map: string[]) {
+  const originalPathDistinctPositions = getDistinctPositions(trackPath(map));
+  const positionForLoops = originalPathDistinctPositions.filter(
+    (newObstaclePosition) => {
+      const mapWithObstacle = structuredClone(map);
+      if (
+        mapWithObstacle[newObstaclePosition.y][newObstaclePosition.x] !== "^"
+      ) {
+        mapWithObstacle[newObstaclePosition.y] = mapWithObstacle[
+          newObstaclePosition.y
+        ]
+          .split("")
+          .toSpliced(newObstaclePosition.x, 1, "#")
+          .join("");
+      }
+      const path: PositionAndDirection[] = [];
+      let lastPosition = findInitialPosition(map);
+      let foundDuplicatedPosition = false;
+      while (
+        lastPosition.x > -1 &&
+        lastPosition.y > -1 &&
+        !foundDuplicatedPosition
+      ) {
+        const nextPosition = moveNext(mapWithObstacle, lastPosition);
+        if (nextPosition.direction === lastPosition.direction) {
+          path.push(lastPosition);
+        }
+        foundDuplicatedPosition = path.some(
+          (position) =>
+            position.x === nextPosition.x &&
+            position.y === nextPosition.y &&
+            position.direction === nextPosition.direction,
+        );
+        lastPosition = nextPosition;
+      }
+      return foundDuplicatedPosition;
+    },
+  );
+  return positionForLoops.length;
 }

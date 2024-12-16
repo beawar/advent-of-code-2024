@@ -1,4 +1,5 @@
 import {
+  findObstaclePositionsForLoop,
   getDistinctPositionCount,
   readAndParseInputFile,
   trackPath,
@@ -8,7 +9,8 @@ async function main() {
   const map = await readAndParseInputFile(`${import.meta.dirname}/input`);
   const path = trackPath(map);
   const distinctPositions = getDistinctPositionCount(path);
-  return [distinctPositions];
+  const positionsForLoop = findObstaclePositionsForLoop(map);
+  return [distinctPositions, positionsForLoop];
 }
 
 main()

@@ -1,6 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
+  findObstaclePositionsForLoop,
   getDistinctPositionCount,
   moveNext,
   readAndParseInputFile,
@@ -207,5 +208,30 @@ describe("getDistinctPositionCount", () => {
     ];
     const result = getDistinctPositionCount(path);
     assert.deepStrictEqual(result, 5);
+  });
+});
+
+describe("findObstaclePositionsForLoop", () => {
+  it("should return the position of the obstacle which creates a loop", () => {
+    const map = [".#..", "...#", "#^..", "...."];
+    const result = findObstaclePositionsForLoop(map);
+    assert.deepStrictEqual(result, 1);
+  });
+
+  it("should return all the positions of the obstacle which create a loop", () => {
+    const map = [
+      "....#.....",
+      ".........#",
+      "..........",
+      "..#.......",
+      ".......#..",
+      "..........",
+      ".#..^.....",
+      "........#.",
+      "#.........",
+      "......#...",
+    ];
+    const result = findObstaclePositionsForLoop(map);
+    assert.deepStrictEqual(result, 6);
   });
 });
