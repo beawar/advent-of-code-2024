@@ -3,6 +3,7 @@ import {
   createFileBlocks,
   createSpaceBlocks,
   mergeBlocks,
+  mergeBlocksNoBreak,
   readAndParseInputFile,
 } from "./day9.js";
 
@@ -12,7 +13,8 @@ async function main() {
   const spaceBlocks = createSpaceBlocks(input);
   const mergedBlocks = mergeBlocks(fileBlocks, spaceBlocks);
   const part1 = calcChecksum(mergedBlocks);
-  const part2 = 0;
+  const mergedBlocksNoBreak = mergeBlocksNoBreak(fileBlocks, spaceBlocks);
+  const part2 = calcChecksum(mergedBlocksNoBreak);
   return [part1, part2];
 }
 
