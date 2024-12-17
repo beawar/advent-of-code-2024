@@ -1,0 +1,14 @@
+{
+  "name": "day9",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node --import tsx src/main.ts",
+    "test": "node --import=tsx --test **/*.test.ts",
+    "test:watch": "node --import=tsx --test --watch **/*.test.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
