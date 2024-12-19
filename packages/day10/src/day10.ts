@@ -105,3 +105,22 @@ export function sumTrailheadScores(map: number[][]) {
   });
   return sum;
 }
+
+export function findTrailheadRating(
+  map: number[][],
+  initialPosition: Position,
+) {
+  return findTrailPaths(map, initialPosition).length;
+}
+
+export function sumTrailheadRatings(map: number[][]) {
+  let sum = 0;
+  map.forEach((row, y) => {
+    row.forEach((value, x) => {
+      if (value === 0) {
+        sum += findTrailheadRating(map, { x, y });
+      }
+    });
+  });
+  return sum;
+}
