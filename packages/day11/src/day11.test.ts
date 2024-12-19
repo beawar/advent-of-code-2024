@@ -1,6 +1,11 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { blink, readAndParseInputFile, transformStone } from "./day11.ts";
+import {
+  countResultingStones,
+  countResultingStonesFromStone,
+  readAndParseInputFile,
+  transformStone,
+} from "./day11.ts";
 
 describe("readAndParseInputFile", () => {
   it("should return the array of number representing the stones", async () => {
@@ -37,28 +42,24 @@ describe("transformStone", () => {
   });
 });
 
-describe("blink", () => {
-  it("should return the new stones after one blink", () => {
-    const stones = [0, 1, 10, 99, 999];
-    const result = blink(stones, 1);
-    assert.deepStrictEqual(result, [1, 2024, 1, 0, 9, 9, 2021976]);
+describe("countResultingStones", () => {
+  it("should return the number of stones created by 6 blinks", () => {
+    const stones = [125, 17];
+    const result = countResultingStones(stones, 6);
+    assert.equal(result, 22);
   });
 
-  it("should return the new stones after 2 blinks", () => {
+  it("should return the number of stones created by 25 blinks", () => {
     const stones = [125, 17];
-    const result = blink(stones, 2);
-    assert.deepStrictEqual(result, [253, 0, 2024, 14168]);
+    const result = countResultingStones(stones, 25);
+    assert.equal(result, 55312);
   });
+});
 
-  it("should return the new stones after 6 blinks", () => {
-    const stones = [125, 17];
-    const result = blink(stones, 6);
-    assert.deepStrictEqual(
-      result,
-      [
-        2097446912, 14168, 4048, 2, 0, 2, 4, 40, 48, 2024, 40, 48, 80, 96, 2, 8,
-        6, 7, 6, 0, 3, 2,
-      ],
-    );
+describe("countResultingStonesFromStone", () => {
+  it("should return the number of stones created after 6 blinks from a single stone", () => {
+    const stone = 125;
+    const result = countResultingStonesFromStone(stone, 6);
+    assert.equal(result, 7);
   });
 });
