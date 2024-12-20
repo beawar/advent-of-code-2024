@@ -7,7 +7,9 @@ import {
   calcArea,
   calcPerimeter,
   findDistinctRegions,
-  calcTotalPriceFromMap,
+  calcPriceAreaPerPerimeterFromMap,
+  calcSides,
+  calcPriceAreaPerSidesFromMap,
 } from "./day12.ts";
 
 describe("readAndParseInputFile", () => {
@@ -203,16 +205,16 @@ describe("findDistinctRegions", () => {
   });
 });
 
-describe("calcTotalPriceFromMap", () => {
+describe("calcPriceAreaPerPerimeterFromMap", () => {
   it("should return the total price (example 1)", () => {
     const map = ["AAAA", "BBCD", "BBCC", "EEEC"];
-    const result = calcTotalPriceFromMap(map);
+    const result = calcPriceAreaPerPerimeterFromMap(map);
     assert.deepStrictEqual(result, 140);
   });
 
   it("should return the total price (example 2)", () => {
     const map = ["OOOOO", "OXOXO", "OOOOO", "OXOXO", "OOOOO"];
-    const result = calcTotalPriceFromMap(map);
+    const result = calcPriceAreaPerPerimeterFromMap(map);
     assert.deepStrictEqual(result, 772);
   });
 
@@ -229,7 +231,200 @@ describe("calcTotalPriceFromMap", () => {
       "MIIISIJEEE",
       "MMMISSJEEE",
     ];
-    const result = calcTotalPriceFromMap(map);
+    const result = calcPriceAreaPerPerimeterFromMap(map);
     assert.deepStrictEqual(result, 1930);
+  });
+});
+
+describe("calcSides", () => {
+  it("should return the sides of a region (C)", () => {
+    const map = ["AAAA", "BBCD", "BBCC", "EEEC"];
+    const region = [
+      { x: 2, y: 1 },
+      { x: 2, y: 2 },
+      { x: 3, y: 2 },
+      { x: 3, y: 3 },
+    ];
+    const result = calcSides(map, region);
+    assert.strictEqual(result, 8);
+  });
+
+  it("should return the sides of a region (B)", () => {
+    const map = ["AAAA", "BBCD", "BBCC", "EEEC"];
+    const region = [
+      { x: 0, y: 1 },
+      { x: 1, y: 1 },
+      { x: 0, y: 2 },
+      { x: 1, y: 2 },
+    ];
+    const result = calcSides(map, region);
+    assert.strictEqual(result, 4);
+  });
+  it("should return the sides of a region (A)", () => {
+    const map = ["AAAA", "BBCD", "BBCC", "EEEC"];
+    const region = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 2, y: 0 },
+      { x: 3, y: 0 },
+    ];
+    const result = calcSides(map, region);
+    assert.strictEqual(result, 4);
+  });
+  it("should return the sides of a region (E)", () => {
+    const map = ["AAAA", "BBCD", "BBCC", "EEEC"];
+    const region = [
+      { x: 0, y: 3 },
+      { x: 1, y: 3 },
+      { x: 2, y: 3 },
+    ];
+    const result = calcSides(map, region);
+    assert.strictEqual(result, 4);
+  });
+  it("should return the sides of a region (D)", () => {
+    const map = ["AAAA", "BBCD", "BBCC", "EEEC"];
+    const region = [{ x: 3, y: 1 }];
+    const result = calcSides(map, region);
+    assert.strictEqual(result, 4);
+  });
+
+  it("should return the sides of a region (other 1)", () => {
+    const map = ["....", "...X", "...X", "...."];
+    const region = [
+      { x: 3, y: 1 },
+      { x: 3, y: 2 },
+    ];
+    const result = calcSides(map, region);
+    assert.strictEqual(result, 4);
+  });
+
+  it("should return the sides of a region (other 2)", () => {
+    const map = ["......", "...XX.", "...X..", "......"];
+    const region = [
+      { x: 3, y: 1 },
+      { x: 3, y: 2 },
+      { x: 4, y: 1 },
+    ];
+    const result = calcSides(map, region);
+    assert.strictEqual(result, 6);
+  });
+
+  it("should return the sides of a region (other 3)", () => {
+    const map = [".......", "...XXX.", "...XXX.", "...XXX."];
+    const region = [
+      { x: 3, y: 1 },
+      { x: 3, y: 2 },
+      { x: 3, y: 3 },
+      { x: 4, y: 1 },
+      { x: 4, y: 2 },
+      { x: 4, y: 3 },
+      { x: 5, y: 1 },
+      { x: 5, y: 2 },
+      { x: 5, y: 3 },
+    ];
+    const result = calcSides(map, region);
+    assert.strictEqual(result, 4);
+  });
+
+  it("should return the sides of a region (other 4)", () => {
+    const map = [".......", "...XXX.", "...XX..", "...XXX."];
+    const region = [
+      { x: 3, y: 1 },
+      { x: 3, y: 2 },
+      { x: 3, y: 3 },
+      { x: 4, y: 1 },
+      { x: 4, y: 2 },
+      { x: 4, y: 3 },
+      { x: 5, y: 1 },
+      { x: 5, y: 3 },
+    ];
+    const result = calcSides(map, region);
+    assert.strictEqual(result, 8);
+  });
+
+  it("should return the sides of a region (other 5)", () => {
+    const map = [".......", "...XXX.", "...X.X.", "...XXX."];
+    const region = [
+      { x: 3, y: 1 },
+      { x: 3, y: 2 },
+      { x: 3, y: 3 },
+      { x: 4, y: 1 },
+      { x: 4, y: 3 },
+      { x: 5, y: 1 },
+      { x: 5, y: 2 },
+      { x: 5, y: 3 },
+    ];
+    const result = calcSides(map, region);
+    assert.strictEqual(result, 8);
+  });
+
+  it("should return the sides of a region (other 6)", () => {
+    const map = ["XXXX", "X...", "X...", "X...", "X..."];
+    const region = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 2, y: 0 },
+      { x: 3, y: 0 },
+      { x: 0, y: 1 },
+      { x: 0, y: 2 },
+      { x: 0, y: 3 },
+      { x: 0, y: 4 },
+    ];
+    const result = calcSides(map, region);
+    assert.strictEqual(result, 6);
+  });
+
+  it("should return the sides of a region (other 7)", () => {
+    const map = ["XXXX", "X.X.", "X...", "XX..", "X..."];
+    const region = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 2, y: 0 },
+      { x: 2, y: 1 },
+      { x: 3, y: 0 },
+      { x: 0, y: 1 },
+      { x: 0, y: 2 },
+      { x: 0, y: 3 },
+      { x: 1, y: 3 },
+      { x: 0, y: 4 },
+    ];
+    const result = calcSides(map, region);
+    assert.strictEqual(result, 14);
+  });
+});
+
+describe("calcPriceAreaPerSidesFromMap", () => {
+  it("should return the total price (example 1)", () => {
+    const map = ["AAAA", "BBCD", "BBCC", "EEEC"];
+    const result = calcPriceAreaPerSidesFromMap(map);
+    assert.deepStrictEqual(result, 80);
+  });
+
+  it("should return the total price (example 2)", () => {
+    const map = ["EEEEE", "EXXXX", "EEEEE", "EXXXX", "EEEEE"];
+    const result = calcPriceAreaPerSidesFromMap(map);
+    assert.deepStrictEqual(result, 236);
+  });
+
+  it("should return the total price (example 3)", () => {
+    const map = ["AAAAAA", "AAABBA", "AAABBA", "ABBAAA", "ABBAAA", "AAAAAA"];
+    const result = calcPriceAreaPerSidesFromMap(map);
+    assert.deepStrictEqual(result, 368);
+  });
+  it("should return the total price (example 4)", () => {
+    const map = [
+      "RRRRIICCFF",
+      "RRRRIICCCF",
+      "VVRRRCCFFF",
+      "VVRCCCJFFF",
+      "VVVVCJJCFE",
+      "VVIVCCJJEE",
+      "VVIIICJJEE",
+      "MIIIIIJJEE",
+      "MIIISIJEEE",
+      "MMMISSJEEE",
+    ];
+    const result = calcPriceAreaPerSidesFromMap(map);
+    assert.deepStrictEqual(result, 1206);
   });
 });

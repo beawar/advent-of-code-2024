@@ -83,15 +83,11 @@ export function calcArea(region: Position[]) {
 
 export function calcPerimeter(map: string[], region: Position[]) {
   return region.reduce((totalPerimeter, position) => {
-    return totalPerimeter + getPerimeterForPosition(map, position, region);
+    return totalPerimeter + getPerimeterForPosition(map, position);
   }, 0);
 }
 
-export function getPerimeterForPosition(
-  map: string[],
-  position: Position,
-  region: Position[],
-) {
+export function getPerimeterForPosition(map: string[], position: Position) {
   return directions.reduce<number>((perimeter, direction) => {
     const next = { ...position };
     switch (direction) {
@@ -115,9 +111,7 @@ export function getPerimeterForPosition(
       next.y < 0 ||
       next.x >= map[0].length ||
       next.y >= map.length ||
-      !region.some(
-        (regionItem) => regionItem.x === next.x && regionItem.y === next.y,
-      )
+      map[next.y][next.x] !== map[position.y][position.x]
     ) {
       return perimeter + 1;
     }
@@ -142,9 +136,85 @@ export function findDistinctRegions(map: string[]) {
   return regions;
 }
 
-export function calcTotalPriceFromMap(map: string[]) {
+export function calcPriceAreaPerPerimeterFromMap(map: string[]) {
   const regions = findDistinctRegions(map);
   return regions.reduce((totalPrice, region) => {
     return totalPrice + calcArea(region) * calcPerimeter(map, region);
+  }, 0);
+}
+
+export function calcSides(map: string[], region: Position[]) {
+  const sidesMap = region.reduce<Record<string, Side[] | undefined>>(
+    (sides, position) => {
+      const newSides = getSidesForPosition(map, position);
+      newSides.forEach((side) => {
+        const key = `${side.direction}-${side.x?.toString() ?? ""}${side.y?.toString() ?? ""}`;
+        if (sides[key] === undefined) {
+          sides[key] = [side];
+        } else {
+          const neighborSide = sides[key].find(
+            (item) => side.from === item.from - 1 || side.to === item.to + 1,
+          );
+          if (neighborSide) {
+            neighborSide.from = Math.min(side.from, neighborSide.from);
+            neighborSide.to = Math.max(side.to, neighborSide.to);
+          } else {
+            sides[key].push(side);
+          }
+        }
+      });
+      return sides;
+    },
+    {},
+  );
+  const sides = Object.values(sidesMap).flat();
+  return sides.length;
+}
+
+interface Side extends Partial<Position> {
+  direction: Direction;
+  from: number;
+  to: number;
+}
+export function getSidesForPosition(map: string[], position: Position) {
+  return directions.reduce<Side[]>((sides, direction) => {
+    const next = { ...position };
+    switch (direction) {
+      case "top":
+        next.y -= 1;
+        break;
+      case "bottom":
+        next.y += 1;
+        break;
+      case "left":
+        next.x -= 1;
+        break;
+      case "right":
+        next.x += 1;
+        break;
+      default:
+        throw new Error("Unsupported direction");
+    }
+    if (
+      next.x < 0 ||
+      next.y < 0 ||
+      next.x >= map[0].length ||
+      next.y >= map.length ||
+      map[next.y][next.x] !== map[position.y][position.x]
+    ) {
+      if (direction === "top" || direction === "bottom") {
+        sides.push({ y: next.y, direction, from: next.x, to: next.x });
+      } else {
+        sides.push({ x: next.x, direction, from: next.y, to: next.y });
+      }
+    }
+    return sides;
+  }, []);
+}
+
+export function calcPriceAreaPerSidesFromMap(map: string[]) {
+  const regions = findDistinctRegions(map);
+  return regions.reduce((totalPrice, region) => {
+    return totalPrice + calcArea(region) * calcSides(map, region);
   }, 0);
 }

@@ -1,9 +1,13 @@
-import { calcTotalPriceFromMap, readAndParseInputFile } from "./day12.js";
+import {
+  calcPriceAreaPerPerimeterFromMap,
+  calcPriceAreaPerSidesFromMap,
+  readAndParseInputFile,
+} from "./day12.js";
 
 async function main() {
   const input = await readAndParseInputFile(`${import.meta.dirname}/input`);
-  const part1 = calcTotalPriceFromMap(input);
-  const part2 = 0;
+  const part1 = calcPriceAreaPerPerimeterFromMap(input);
+  const part2 = calcPriceAreaPerSidesFromMap(input);
   return [part1, part2];
 }
 
