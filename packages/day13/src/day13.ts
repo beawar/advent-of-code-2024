@@ -1,4 +1,4 @@
-import {readFileInput} from "utils/src/index.js";
+import {readFileInput} from "utils/src/index.ts";
 
 interface Button {
   x: number;
@@ -91,54 +91,64 @@ export function findCombination({buttonA, buttonB, prize}: ConfigBlock, limit?: 
 
   let cheapestCombination: Combination | undefined = undefined;
 
-  const mcdX = mcd(buttonA.x, buttonB.x);
-  const mcdY = mcd(buttonA.y, buttonB.y);
-  const mcmX = mcm(buttonA.x, buttonB.x);
-  const mcmY = mcm(buttonA.y, buttonB.y);
+  
 
- const deltaX = prize.x % buttonA.x
-  const mcmDeltaX = mcm(deltaX, buttonB.x)
-  const mcmDeltaX2 = mcm(prize.x % buttonB.x, buttonA.x)
-  const pressDeltaX = mcmDeltaX / buttonB.x
-  const pressDeltaX2 = mcmDeltaX2 / buttonA.x
+  let diffBX = prize.x - (buttonB.x * maxPressButtonB);
+  let diffBY = prize.y - (buttonB.y * maxPressButtonB);
+  let minPressButtonA = Math.ceil(Math.max(diffBX / buttonA.x, diffBY / buttonA.y));
+  let diffAX = prize.x - (buttonA.x * maxPressButtonA);
+  let diffAY = prize.y - (buttonA.y * maxPressButtonA);
+  let minPressButtonB = Math.ceil(Math.max(diffAX / buttonB.x, diffAY / buttonB.y));
+
+  while (maxPressButtonA > minPressButtonA && maxPressButtonB > minPressButtonB) {
+    maxPressButtonB = Math.floor(Math.min((prize.x - (buttonA.x * minPressButtonA)) / buttonB.x, (prize.y - (buttonA.y * minPressButtonA)) / buttonB.y));
+    maxPressButtonA = Math.floor(Math.min((prize.x - (buttonB.x * minPressButtonB)) / buttonA.x, (prize.y - (buttonB.y * minPressButtonB)) / buttonA.y));
+    
+    diffBX = prize.x - (buttonB.x * maxPressButtonB);
+    diffBY = prize.y - (buttonB.y * maxPressButtonB);
+    minPressButtonA = Math.ceil(Math.max(diffBX / buttonA.x, diffBY / buttonA.y));
+    diffAX = prize.x - (buttonA.x * maxPressButtonA);
+    diffAY = prize.y - (buttonA.y * maxPressButtonA);
+    minPressButtonB = Math.ceil(Math.max(diffAX / buttonB.x, diffAY / buttonB.y));
+  }
 
 
-  for (
-    let pressButtonA = maxPressButtonA;
-    pressButtonA >= 0;
-    pressButtonA--
+  // prizeX = (buttonA.x * pressButtonA) + (buttonB.x * pressButtonB)
+  // prizeX = (buttonA.x * pressButtonA) + restA
+  // prizeX = (buttonB.x * pressButtonB) + restB
+  
+  let pressButtonA = maxPressButtonA;
+  let pressButtonB = maxPressButtonB;
+
+  while (
+    pressButtonB >= minPressButtonB
   ) {
-    const diffX = prize.x - (buttonA.x * pressButtonA);
-    const diffY = prize.y - (buttonA.y * pressButtonA);
+    const diffX = prize.x - (buttonB.x * pressButtonB);
+    const diffY = prize.y - (buttonB.y * pressButtonB);
     if ((diffX > 0 && diffX % buttonB.x !== 0) || (diffY > 0 && diffY % buttonB.y !== 0)) {
+      
+
+      pressButtonB--;
       continue;
     }
-    const pressButtonB = diffX / buttonB.x;
+    const pressButtonA = diffX / buttonA.x;
 
-    // for (
-    //   let pressButtonB = maxPressButtonB;
-    //   pressButtonB > 0;
-    //   pressButtonB--
-    // ) {
-      const x = buttonA.x * pressButtonA + buttonB.x * pressButtonB;
-      const y = buttonA.y * pressButtonA + buttonB.y * pressButtonB;
-    //   if (x > prize.x || y > prize.y) {
-    //     break;
-    //   }
-      const tokens =
-        buttonA.tokens * pressButtonA + buttonB.tokens * pressButtonB;
-      if (
-        x === prize.x &&
-        y === prize.y &&
-        (!cheapestCombination || cheapestCombination.tokens > tokens)
-      ) {
-        cheapestCombination = {
-          buttonA: pressButtonA,
-          buttonB: pressButtonB,
-          tokens,
-        };
-      }
-    // }
+    const x = buttonA.x * pressButtonA + buttonB.x * pressButtonB;
+    const y = buttonA.y * pressButtonA + buttonB.y * pressButtonB;
+    const tokens =
+      buttonA.tokens * pressButtonA + buttonB.tokens * pressButtonB;
+    if (
+      x === prize.x &&
+      y === prize.y &&
+      (!cheapestCombination || cheapestCombination.tokens > tokens)
+    ) {
+      cheapestCombination = {
+        buttonA: pressButtonA,
+        buttonB: pressButtonB,
+        tokens,
+      };
+    }
+    pressButtonB--;
   }
   return cheapestCombination;
 }
